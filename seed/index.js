@@ -272,7 +272,7 @@ for (let i = 0; i < variants.length; i++) {
 
 var newUser = new User({
   username: 'admin@admin.com',
-  password: 'admin',
+  password: 'Admin@>~12E',
   fullname: 'Cuneyt Celebican',
   admin: true
 });
