@@ -11,8 +11,34 @@ const CartClass = require('../modules/Cart')
 const paypal_config = require('../configs/paypal-config')
 const paypal = require('paypal-rest-sdk')
 
+/**
+ * @swagger
+ * tags:
+ *  name: Products
+ *  description: Products data
+ */
 
 //GET /products
+/**
+ * @swagger
+ * /products:
+ *  get:
+ *    summary: Get all products
+ *    tags: [Products]
+ *    parameters:
+ *      - $ref: '#/parameters/header/userToken'
+ *      - $ref: '#/parameters/query/department'
+ *      - $ref: '#/parameters/query/category'
+ *      - $ref: '#/parameters/query/order'
+ *      - $ref: '#/parameters/query/range'
+ *    responses:
+ *      200:
+ *        $ref: '#/responses/products/getAllProducts/200'
+ *      401:
+ *        $ref: '#/responses/products/getAllProducts/401'
+ *      404:
+ *        $ref: '#/responses/products/getAllProducts/404'
+ */
 router.get('/products', function (req, res, next) {
   const { query, order } = categorizeQueryString(req.query)
   Product.getAllProducts(query, order, function (e, products) {
@@ -27,6 +53,23 @@ router.get('/products', function (req, res, next) {
 });
 
 //GET /products/:id
+/**
+ * @swagger
+ * /products/{productID}:
+ *  get:
+ *    summary: Get one product data
+ *    tags: [Products]
+ *    parameters:
+ *      - $ref: '#/parameters/header/userToken'
+ *      - $ref: '#/parameters/path/productId'
+ *    responses:
+ *      200:
+ *        $ref: '#/responses/products/getProduct/200'
+ *      401:
+ *        $ref: '#/responses/products/getProduct/401'
+ *      404:
+ *        $ref: '#/responses/products/getProduct/404'
+ */
 router.get('/products/:id', function (req, res, next) {
   let productId = req.params.id;
   Product.getProductByID(productId, function (e, item) {
@@ -39,7 +82,30 @@ router.get('/products/:id', function (req, res, next) {
   });
 });
 
+/**
+ * @swagger
+ * tags:
+ *  name: Variants
+ *  description: Variants data
+ */
+
 //GET /variants
+/**
+ * @swagger
+ * /variants:
+ *  get:
+ *    summary: Get all variants
+ *    tags: [Variants]
+ *    parameters:
+ *      - $ref: '#/parameters/query/variantId'
+ *    responses:
+ *      200:
+ *        $ref: '#/responses/variants/getAllVariants/200'
+ *      401:
+ *        $ref: '#/responses/variants/getAllVariants/401'
+ *      404:
+ *        $ref: '#/responses/variants/getAllVariants/404'
+ */
 router.get('/variants', function (req, res, next) {
   let { productId } = req.query
   if (productId) {
@@ -60,6 +126,23 @@ router.get('/variants', function (req, res, next) {
 })
 
 //GET /variants/:id
+/**
+ * @swagger
+ * /variants/{variantId}:
+ *  get:
+ *    summary: Get one variant data
+ *    tags: [Variants]
+ *    parameters:
+ *      - $ref: '#/parameters/header/userToken'
+ *      - $ref: '#/parameters/path/variantId'
+ *    responses:
+ *      200:
+ *        $ref: '#/responses/variants/getVariant/200'
+ *      401:
+ *        $ref: '#/responses/variants/getVariant/401'
+ *      404:
+ *        $ref: '#/responses/variants/getVariant/404'
+ */
 router.get('/variants/:id', ensureAuthenticated, function (req, res, next) {
   let id = req.params.id
   if (id) {
@@ -70,7 +153,30 @@ router.get('/variants/:id', ensureAuthenticated, function (req, res, next) {
   }
 })
 
+/**
+ * @swagger
+ * tags:
+ *  name: Departments
+ *  description: Departments list
+ */
+
 //GET /departments
+/**
+ * @swagger
+ * /departments:
+ *  get:
+ *    summary: Get all departments
+ *    tags: [Departments]
+ *    paramteters:
+ *      - $ref: '#/parameters/header/userToken'
+ *    responses:
+ *      200:
+ *          $ref: '#/responses/departments/getAllDepartments/200'
+ *      401:
+ *          $ref: '#/responses/departments/getAllDepartments/401'
+ *      500:
+ *          $ref: '#/responses/departments/getAllDepartments/500'
+ */
 router.get('/departments', function (req, res, next) {
   Department.getAllDepartments(req.query, function (err, d) {
     if (err) return next(err)
@@ -78,7 +184,30 @@ router.get('/departments', function (req, res, next) {
   })
 })
 
+/**
+ * @swagger
+ * tags:
+ *  name: Categories
+ *  description: Categories list
+ */
+
 //GET /categories
+/**
+ * @swagger
+ * /categories:
+ *  get:
+ *    summary: Get all categories
+ *    tags: [Categories]
+ *    parameters:
+ *       - $ref: '#/parameters/header/userToken'
+ *    responses:
+ *       200:
+ *           $ref: '#/responses/categories/getAllCategories/200'
+ *       401:
+ *           $ref: '#/responses/categories/getAllCategories/401'
+ *       500:
+ *           $ref: '#/responses/categories/getAllCategories/500'
+ */
 router.get('/categories', function (req, res, next) {
   Category.getAllCategories(function (err, c) {
     if (err) return next(err)
@@ -131,7 +260,29 @@ router.get('/search', function (req, res, next) {
   })
 })
 
+/**
+ * @swagger
+ * tags:
+ *  name: Filter
+ */
+
 // GET filter
+/**
+ * @swagger
+ * /filter:
+ *  get:
+ *    summary: Autocomplete input any string return suggestions object
+ *    tags: [Filter]
+ *    parameters:
+ *      - $ref: '#/parameters/query/query'
+ *    responses:
+ *      200:
+ *          $ref: '#/responses/filter/200'
+ *      401:
+ *          $ref: '#/responses/filter/401'
+ *      500:
+ *          $ref: '#/responses/filter/500'
+ */
 router.get('/filter', function (req, res, next) {
   let result = {}
   let query = req.query.query

@@ -10,6 +10,19 @@ var expressValidator  = require('express-validator');//req.checkbody()
 const mongoConfig = require('./configs/mongo-config')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var swaggerUI = require('swagger-ui-express');
+var swaggerJsDoc = require('swagger-jsdoc');
+const swaggerOptions = require('./configs/swagger/swagger-info');
+
+const options = {
+  definition: {
+    openapi: "3.0.1",
+    info: swaggerOptions
+  },
+  apis: ["./routes/*.js", "./configs/swagger/parameters.yaml", "./configs/swagger/path.yaml"]
+};
+
+const specs = swaggerJsDoc(options);
 
 mongoose.connect(mongoConfig, { useNewUrlParser: true, useCreateIndex: true, },function(error){
   if(error) throw error
@@ -51,6 +64,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //routers
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs, {explorer: true}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
