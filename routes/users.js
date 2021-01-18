@@ -170,7 +170,7 @@ router.get('/:userId/cart', ensureAuthenticated, function (req, res, next) {
  * @swagger
  * /users/{userId}/cart:
  *    post:
- *      sumary: Create cart
+ *      summary: Create cart
  *      tags: [Users]
  *      description: Initialize when user add first product to cart
  *      parameters:
