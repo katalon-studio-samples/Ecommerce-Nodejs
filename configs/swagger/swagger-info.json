@@ -1,0 +1,31 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "version": "1.0.0",
+        "title": "Ecommerce APIs Document",
+        "description": "This helps to list out all APIs sample provided for Ecommerce web application",
+        "contact": {
+            "name": "Katalon LLC",
+            "url": "https://www.katalon.com/"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "tags": [
+        {
+            "name": "User",
+            "description": "User Operations"
+        }
+    ],
+    "servers": [
+        {
+            "url": "http://localhost:4000/",
+            "description": "Local server"
+        },
+        {
+            "url": "http://54.225.144.144:4000/"
+        }
+    ]
+}

@@ -10,8 +10,33 @@ const Product = require('../models/Product')
 const Variant = require('../models/Variant')
 const TypedError = require('../modules/ErrorHandler')
 
+/**
+ * @swagger
+ * tags:
+ *  name: Users
+ *  description: User management
+ */
 
 //POST /signin
+/**
+ * @swagger
+ * /users/signin:
+ *   post:
+ *     summary: Create a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *              $ref: '#/parameters/users/signin'
+ *     responses:
+ *      201:
+ *        $ref: '#/responses/users/signin/201'
+ *      400:
+ *        $ref: '#/responses/users/signin/400'
+ *      409:
+ *        $ref: '#/responses/users/signin/409'
+ */
 router.post('/signin', function (req, res, next) {
   const { fullname, email, password, verifyPassword } = req.body
   req.checkBody('fullname', 'fullname is required').notEmpty();
@@ -55,6 +80,25 @@ router.post('/signin', function (req, res, next) {
 });
 
 //POST /login
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     summary: Login with user account
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *              $ref: '#/parameters/users/login'
+ *     responses:
+ *        201:
+ *          $ref: '#/responses/users/login/201'
+ *        400:
+ *          $ref: '#/responses/users/login/400'
+ *        403:
+ *          $ref: '#/responses/users/login/403'
+ */
 router.post('/login', function (req, res, next) {
   const { email, password } = req.body.credential || {}
   if (!email || !password) {
@@ -92,6 +136,23 @@ router.post('/login', function (req, res, next) {
 })
 
 //GET cart
+/**
+ * @swagger
+ * /users/{userId}/cart:
+ *   get:
+ *     summary: Get cart information
+ *     tags: [Users]
+ *     parameters:
+ *      - $ref: '#/parameters/path/userId'
+ *      - $ref: '#/parameters/header/userToken'
+ *     responses:
+ *        200:
+ *          $ref: '#/responses/users/getCart/200'
+ *        401:
+ *          $ref: '#/responses/users/getCart/401'
+ *        404:
+ *          $ref: '#/responses/users/getCart/404'
+ */
 router.get('/:userId/cart', ensureAuthenticated, function (req, res, next) {
   let userId = req.params.userId
   Cart.getCartByUserId(userId, function (err, cart) {
@@ -105,6 +166,29 @@ router.get('/:userId/cart', ensureAuthenticated, function (req, res, next) {
 })
 
 //POST cart
+/**
+ * @swagger
+ * /users/{userId}/cart:
+ *    post:
+ *      summary: Create cart
+ *      tags: [Users]
+ *      description: Initialize when user add first product to cart
+ *      parameters:
+ *        - $ref: '#/parameters/path/userId'
+ *        - $ref: '#/parameters/header/userToken'
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            $ref: '#/parameters/users/createCart'
+ *      responses:
+ *          201:
+ *            $ref: '#/responses/users/createCart/201'
+ *          400:
+ *            $ref: '#/responses/users/createCart/400'
+ *          401:
+ *            $ref: '#/responses/users/createCart/401'
+ */
 router.post('/:userId/cart', ensureAuthenticated, function (req, res, next) {
   let userId = req.params.userId
   let { productId, increase, decrease } = req.body

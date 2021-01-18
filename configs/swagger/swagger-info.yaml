@@ -1,0 +1,14 @@
+openapi: 3.0.1,
+info:
+  version: 1.0.0,
+  title: Ecommerce APIs Document,
+  description: This helps to list out all APIs sample provided for Ecommerce web application,
+  contact:
+    name: Katalon LLC,
+    url: https://www.katalon.com/
+servers: [
+  {
+    url: http://localhost:4000/,
+    description: Local server
+  }
+]
