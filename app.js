@@ -12,13 +12,10 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var swaggerUI = require('swagger-ui-express');
 var swaggerJsDoc = require('swagger-jsdoc');
-const swaggerOptions = require('./configs/swagger/swagger-info');
+const swaggerInfo = require('./configs/swagger/swagger-info');
 
 const options = {
-  definition: {
-    openapi: "3.0.1",
-    info: swaggerOptions
-  },
+  definition: swaggerInfo,
   apis: ["./routes/*.js", "./configs/swagger/parameters.yaml", "./configs/swagger/path.yaml"]
 };
 
