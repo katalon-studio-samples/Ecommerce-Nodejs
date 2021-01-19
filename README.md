@@ -2,9 +2,9 @@
 
 
 
-#### front-end codes [click here](https://github.com/levelopers/Ecommerce-Reactjs)
+#### front-end codes [click here](https://github.com/katalon-studio-samples/Ecommerce-Reactjs)
 
-#### api documentation:  [swaggerHub](https://app.swaggerhub.com/apis-docs/levelopers2/Ecommerce/1.0.0)
+#### api documentation:  [swaggerHub](http://54.225.144.144:4000/api-docs/)
 
 #### populate data: run  `node ./seed` (make sure you fill up `mongo-config` file with mongodb url)
 
