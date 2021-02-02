@@ -311,4 +311,43 @@ router.put('/:userId/cart', ensureAuthenticated, function (req, res, next) {
   })
 })
 
+//DELETE cart
+/**
+ * @swagger
+ * /users/{userId}/cart:
+ *    delete:
+ *      summary: Clear cart
+ *      tags: [Users]
+ *      description: Clear all products from user's bag
+ *      parameters:
+ *        - $ref: '#/parameters/path/userId'
+ *        - $ref: '#/parameters/header/userToken'
+ *      responses:
+ *          201:
+ *            $ref: '#/responses/users/createCart/201'
+ *          400:
+ *            $ref: '#/responses/users/createCart/400'
+ *          401:
+ *            $ref: '#/responses/users/createCart/401'
+ */
+router.delete('/:userId/cart', ensureAuthenticated, function (req, res, next) {
+  let userId = req.params.userId
+
+  Cart.getCartByUserId(userId, function (err, c) {
+    if (err) return next(err)
+    if (c.length > 0) {
+      Cart.updateCartByUserId(
+        userId,
+        {
+          userId: userId
+        },
+        function (err, result) {
+          if (err) return next(err)
+          res.json(result)
+        }
+      )
+    }
+  })
+})
+
 module.exports = router;
