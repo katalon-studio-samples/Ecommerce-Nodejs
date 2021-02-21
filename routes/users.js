@@ -339,6 +339,8 @@ router.delete('/:userId/cart', ensureAuthenticated, function (req, res, next) {
       Cart.updateCartByUserId(
         userId,
         {
+          totalQty: 0,
+          totalPrice: 0,
           userId: userId
         },
         function (err, result) {
@@ -346,6 +348,9 @@ router.delete('/:userId/cart', ensureAuthenticated, function (req, res, next) {
           res.json(result)
         }
       )
+    }
+    else {
+      res.json(c);
     }
   })
 })
