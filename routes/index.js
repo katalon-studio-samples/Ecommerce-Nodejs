@@ -235,7 +235,7 @@ router.get('/search', function (req, res, next) {
           query['title'] = query['category']
           delete query['category']
           Product.getProductByTitle(query, order, function (err, p) {
-            if (err) return next(err)
+            if (err) return res.json({ products: null})
             if (p.length > 0) {
               return res.json({ products: p })
             } else {
@@ -244,12 +244,12 @@ router.get('/search', function (req, res, next) {
               Product.getProductByID(query.id, function (err, p) {
                 let error = new TypedError('search', 404, 'not_found', { message: "no product exist" })
                 if (err) {
-                  return next(error)
+                  return  res.json({ products: null})
                 }
                 if (p) {
                   return res.json({ products: p })
                 } else {
-                  return next(error)
+                  return  res.json({ products: null})
                 }
               })
             }
