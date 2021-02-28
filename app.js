@@ -14,12 +14,12 @@ var swaggerUI = require('swagger-ui-express');
 var swaggerJsDoc = require('swagger-jsdoc');
 const swaggerInfo = require('./configs/swagger/swagger-info');
 
-const options = {
+const swaggerOptions = {
   definition: swaggerInfo,
-  apis: ["./routes/*.js", "./configs/swagger/parameters.yaml", "./configs/swagger/path.yaml"]
+  apis: ["./routes/*.js"]
 };
 
-const specs = swaggerJsDoc(options);
+const swaggerSpecs = swaggerJsDoc(swaggerOptions);
 
 mongoose.connect(mongoConfig, { useNewUrlParser: true, useCreateIndex: true, },function(error){
   if(error) throw error
@@ -61,7 +61,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 //routers
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs, {explorer: true}));
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerSpecs, {explorer: true}));
+app.use('/swagger.json', function(req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpecs);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

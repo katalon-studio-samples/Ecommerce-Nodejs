@@ -28,14 +28,72 @@ const TypedError = require('../modules/ErrorHandler')
  *       required: true
  *       content:
  *         application/json:
- *              $ref: '#/parameters/users/signin'
+ *          schema:
+ *            type: object
+ *            properties:
+ *              fullname:
+ *                name: fullname
+ *                example: bob
+ *                description: User full name.
+ *                required: true
+ *                type: string
+ *              email:
+ *                name: email
+ *                example: bob@bob.com
+ *                description: Email to register new account.
+ *                required: true
+ *                type: string
+ *              password:
+ *                name: password
+ *                example: Ab123123
+ *                description: Password for new account.
+ *                type: string
+ *              verifyPassword:
+ *                name: verifyPassword
+ *                example: Ab123123
+ *                description: Verify new password again.
+ *                type: string
  *     responses:
  *      201:
- *        $ref: '#/responses/users/signin/201'
+ *        description: user created
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "message": "user created"
+ *              }
  *      400:
- *        $ref: '#/responses/users/signin/400'
+ *        description: Bad request
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 400,
+ *                "type": "missing_field",
+ *                "error": {
+ *                  "errors": [
+ *                    {
+ *                      "param": "username",
+ *                      "msg": "username is required"
+ *                    }
+ *                  ]
+ *                }
+ *              }
  *      409:
- *        $ref: '#/responses/users/signin/409'
+ *        description: Existed user
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 409,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "user is existed"
+ *                }
+ *              }
  */
 router.post('/signin', function (req, res, next) {
   const { fullname, email, password, verifyPassword } = req.body
@@ -90,14 +148,65 @@ router.post('/signin', function (req, res, next) {
  *       required: true
  *       content:
  *         application/json:
- *              $ref: '#/parameters/users/login'
+ *            schema:
+ *              type: object
+ *              properties:
+ *                credential:
+ *                  requried: true
+ *                  type: object
+ *                  properties:
+ *                    email:
+ *                      name: email
+ *                      example: bob@bob.com
+ *                      description: Email to sign in account.
+ *                      required: true
+ *                      type: string
+ *                    password:
+ *                      name: password
+ *                      example: Ab123123
+ *                      description: Password to sign in account.
+ *                      type: string
  *     responses:
  *        201:
- *          $ref: '#/responses/users/login/201'
+ *          description: user token created
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example: {
+ *                  "user_token": {
+ *                    "user_id": "5c9d2e70bbb680869617ea63",
+ *                    "user_name": "bob",
+ *                    "token": "Due6daUTre",
+ *                    "expire_in": 2592000
+ *                  }
+ *                } 
  *        400:
- *          $ref: '#/responses/users/login/400'
+ *          description: missing field
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example: {
+ *                  "status": 400,
+ *                  "type": "missing_field",
+ *                  "error": {
+ *                    "message": "missing username or password"
+ *                  }
+ *                } 
  *        403:
- *          $ref: '#/responses/users/login/403'
+ *          description: Incorrect username or password
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example: {
+ *                  "status": 403,
+ *                  "type": "invalid_field",
+ *                  "error": {
+ *                    "message": "Incorrect username or password"
+ *                  }
+ *                }
  */
 router.post('/login', function (req, res, next) {
   const { email, password } = req.body.credential || {}
@@ -143,15 +252,67 @@ router.post('/login', function (req, res, next) {
  *     summary: Get cart information
  *     tags: [Users]
  *     parameters:
- *      - $ref: '#/parameters/path/userId'
- *      - $ref: '#/parameters/header/userToken'
+ *      - userId:
+ *        name: userId
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
+ *      - userToken:
+ *        name: user_token
+ *        in: header
+ *        required: true
+ *        description: authorization
+ *        schema:
+ *          type: string
  *     responses:
  *        200:
- *          $ref: '#/responses/users/getCart/200'
+ *          description: Find cart success
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example: {
+ *                  "cart": {
+ *                    "_id": "5cafefa23e358c6d7669333b",
+ *                    "items": {
+ *                      "5bedf5eec14d7822b39d9d4e": {
+ *                        "item": {
+ *                          "_id": "5bedf5eec14d7822b39d9d4e",
+ *                          "imagePath": "/uploads/1775300615_1_1_1.jpg",
+ *                          "title": "Perl Knit Swear",
+ *                          "description": "Purl-stitch knit sweater in a combination of textures. Ribbed trim.",
+ *                          "price": 79.99,
+ *                          "color": "Orange",
+ *                          "size": "M,L",
+ *                          "quantity": 5,
+ *                          "department": "Men",
+ *                          "category": "Knitwear"
+ *                        },
+ *                        "qty": 0,
+ *                        "price": 79.99
+ *                      }
+ *                    },
+ *                    "totalQty": 8,
+ *                    "totalPrice": "401.92,",
+ *                    "userId": "5ca266b847c6e01609fe6e21"
+ *                  }
+ *                }
  *        401:
- *          $ref: '#/responses/users/getCart/401'
+ *          description: Authentication fail
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                example: {
+ *                  "status": 401,
+ *                  "type": "invalid_field",
+ *                  "error": {
+ *                    "message": "Token is not valid"
+ *                  }
+ *                }
  *        404:
- *          $ref: '#/responses/users/getCart/404'
+ *          description: Find cart fail
  */
 router.get('/:userId/cart', ensureAuthenticated, function (req, res, next) {
   let userId = req.params.userId
@@ -174,20 +335,91 @@ router.get('/:userId/cart', ensureAuthenticated, function (req, res, next) {
  *      tags: [Users]
  *      description: Initialize when user add first product to cart
  *      parameters:
- *        - $ref: '#/parameters/path/userId'
- *        - $ref: '#/parameters/header/userToken'
+ *        - userId:
+ *          name: userId
+ *          in: path
+ *          required: true
+ *          schema:
+ *            type: string
+ *        - userToken:
+ *          name: user_token
+ *          in: header
+ *          required: true
+ *          description: authorization
+ *          schema:
+ *            type: string
  *      requestBody:
  *        required: true
  *        content:
  *          application/json:
- *            $ref: '#/parameters/users/createCart'
+ *            schema:
+ *              type: object
+ *              properties:
+ *                userId:
+ *                  userId:
+ *                  name: userId
+ *                  type: string
+ *                  example: 5caf90b95d51a668344ba1e1
+ *                productId:
+ *                  name: productId
+ *                  example: 5bedf5eec14d7822b39d9d4e
+ *                  type: string
+ *                increase:
+ *                  name: increase
+ *                  example: false
+ *                  type: boolean
+ *                decrease:
+ *                  name: decrease
+ *                  example: true
+ *                  type: boolean
  *      responses:
  *          201:
- *            $ref: '#/responses/users/createCart/201'
+ *            description: Create cart success
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  example: {
+ *                    "cart": {
+ *                      "_id": "5cafefa23e358c6d7669333b",
+ *                      "items": {
+ *                        "5bedf5eec14d7822b39d9d4e": {
+ *                          "item": {
+ *                            "_id": "5bedf5eec14d7822b39d9d4e",
+ *                            "imagePath": "/uploads/1775300615_1_1_1.jpg",
+ *                            "title": "Perl Knit Swear",
+ *                            "description": "Purl-stitch knit sweater in a combination of textures. Ribbed trim.",
+ *                            "price": 79.99,
+ *                            "color": "Orange",
+ *                            "size": "M,L",
+ *                            "quantity": 5,
+ *                            "department": "Men",
+ *                            "category": "Knitwear"
+ *                          },
+ *                          "qty": 0,
+ *                          "price": 79.99
+ *                        }
+ *                      },
+ *                      "totalQty": 8,
+ *                      "totalPrice": "401.92,",
+ *                      "userId": "5ca266b847c6e01609fe6e21"
+ *                    }
+ *                  }
  *          400:
- *            $ref: '#/responses/users/createCart/400'
+ *            description: Create cart fail
  *          401:
- *            $ref: '#/responses/users/createCart/401'
+ *            description: Authentication fail
+ *            content:
+ *              application/json:
+ *                schema:
+ *                  type: object
+ *                  example: {
+ *                    "status": 401,
+ *                    "type": "invalid_field",
+ *                    "error": {
+ *                      "message": "Token is not valid"
+ *                    }
+ *                  }
  */
 router.post('/:userId/cart', ensureAuthenticated, function (req, res, next) {
   let userId = req.params.userId
@@ -312,24 +544,6 @@ router.put('/:userId/cart', ensureAuthenticated, function (req, res, next) {
 })
 
 //DELETE cart
-/**
- * @swagger
- * /users/{userId}/cart:
- *    delete:
- *      summary: Clear cart
- *      tags: [Users]
- *      description: Clear all products from user's bag
- *      parameters:
- *        - $ref: '#/parameters/path/userId'
- *        - $ref: '#/parameters/header/userToken'
- *      responses:
- *          201:
- *            $ref: '#/responses/users/createCart/201'
- *          400:
- *            $ref: '#/responses/users/createCart/400'
- *          401:
- *            $ref: '#/responses/users/createCart/401'
- */
 router.delete('/:userId/cart', ensureAuthenticated, function (req, res, next) {
   let userId = req.params.userId
 

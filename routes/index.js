@@ -26,18 +26,70 @@ const paypal = require('paypal-rest-sdk')
  *    summary: Get all products
  *    tags: [Products]
  *    parameters:
- *      - $ref: '#/parameters/header/userToken'
- *      - $ref: '#/parameters/query/department'
- *      - $ref: '#/parameters/query/category'
- *      - $ref: '#/parameters/query/order'
- *      - $ref: '#/parameters/query/range'
+ *      - name: user_token
+ *        in: header
+ *        required: true
+ *        description: authorization
+ *        schema:
+ *          type: string
+ *      - name: department
+ *        in: query
+ *        description: The department Men and Women...
+ *        schema:
+ *          type: string
+ *      - name: category
+ *        in: query
+ *        description: The category Jeans,Sweater,etc...
+ *        schema:
+ *          type: string
+ *      - name: order
+ *        in: query
+ *        description: price, -price...
+ *        schema:
+ *          type: string
+ *      - name: range
+ *        in: query
+ *        description: price range '20-30'
+ *        schema:
+ *          type: string
  *    responses:
  *      200:
- *        $ref: '#/responses/products/getAllProducts/200'
+ *        description: Get all products success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "products": [
+ *                  {
+ *                    "_id": "5bedf5eec14d7822b39d9d4e",
+ *                    "imagePath": "/uploads/1775300615_1_1_1.jpg",
+ *                    "title": "Perl Knit Swear",
+ *                    "description": "Purl-stitch knit sweater in a combination of textures. Ribbed trim.",
+ *                    "price": 79.99,
+ *                    "color": "Orange",
+ *                    "size": "M,L",
+ *                    "quantity": 5,
+ *                    "department": "Men",
+ *                    "category": "Knitwear"
+ *                  }
+ *                ]
+ *              }
  *      401:
- *        $ref: '#/responses/products/getAllProducts/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *      404:
- *        $ref: '#/responses/products/getAllProducts/404'
+ *        description: Get all products fail
  */
 router.get('/products', function (req, res, next) {
   const { query, order } = categorizeQueryString(req.query)
@@ -60,15 +112,53 @@ router.get('/products', function (req, res, next) {
  *    summary: Get one product data
  *    tags: [Products]
  *    parameters:
- *      - $ref: '#/parameters/header/userToken'
- *      - $ref: '#/parameters/path/productId'
+ *      - name: user_token
+ *        in: header
+ *        required: true
+ *        description: authorization
+ *        schema:
+ *          type: string
+ *      - name: productId
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
  *    responses:
  *      200:
- *        $ref: '#/responses/products/getProduct/200'
+ *        description: Find product success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "product": {
+ *                  "_id": "5bedf5eec14d7822b39d9d4e",
+ *                  "imagePath": "/uploads/1775300615_1_1_1.jpg",
+ *                  "title": "Perl Knit Swear",
+ *                  "description": "Purl-stitch knit sweater in a combination of textures. Ribbed trim.",
+ *                  "price": 79.99,
+ *                  "color": "Orange",
+ *                  "size": "M,L",
+ *                  "quantity": 5,
+ *                  "department": "Men",
+ *                  "category": "Knitwear"
+ *                }
+ *              }
  *      401:
- *        $ref: '#/responses/products/getProduct/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *      404:
- *        $ref: '#/responses/products/getProduct/404'
+ *        description: Not found
  */
 router.get('/products/:id', function (req, res, next) {
   let productId = req.params.id;
@@ -97,14 +187,45 @@ router.get('/products/:id', function (req, res, next) {
  *    summary: Get all variants
  *    tags: [Variants]
  *    parameters:
- *      - $ref: '#/parameters/query/variantId'
+ *      - name: variantId
+ *        in: query
+ *        schema:
+ *          type: string
  *    responses:
  *      200:
- *        $ref: '#/responses/variants/getAllVariants/200'
+ *        description: Get all variants success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "variants": [
+ *                  {
+ *                    "_id": "5feae2f546df702ab96d5e63",
+ *                    "productID": "5bedf3b9c14d7822b39d9d45",
+ *                    "imagePath": "https://static.zara.net/photos///2018/I/0/1/p/5644/641/735/2/w/1920/5644641735_2_5_1.jpg?ts=1540395590656",
+ *                    "color": "Copper",
+ *                    "size": "S,L,XL",
+ *                    "quantity": 12,
+ *                    "__v": 0
+ *                  }
+ *                ]
+ *              }
  *      401:
- *        $ref: '#/responses/variants/getAllVariants/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *      404:
- *        $ref: '#/responses/variants/getAllVariants/404'
+ *        description: Get all products fail
  */
 router.get('/variants', function (req, res, next) {
   let { productId } = req.query
@@ -133,15 +254,51 @@ router.get('/variants', function (req, res, next) {
  *    summary: Get one variant data
  *    tags: [Variants]
  *    parameters:
- *      - $ref: '#/parameters/header/userToken'
- *      - $ref: '#/parameters/path/variantId'
+ *      - name: user_token
+ *        in: header
+ *        required: true
+ *        description: authorization
+ *        schema:
+ *          type: string
+ *      - name: variantId
+ *        in: path
+ *        required: true
+ *        schema:
+ *          type: string
  *    responses:
  *      200:
- *        $ref: '#/responses/variants/getVariant/200'
+ *        description: Find variant success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "variant": 
+ *                  {
+ *                    "_id": "5feae2f546df702ab96d5e63",
+ *                    "productID": "5bedf3b9c14d7822b39d9d45",
+ *                    "imagePath": "https://static.zara.net/photos///2018/I/0/1/p/5644/641/735/2/w/1920/5644641735_2_5_1.jpg?ts=1540395590656",
+ *                    "color": "Copper",
+ *                    "size": "S,L,XL",
+ *                    "quantity": 12,
+ *                    "__v": 0
+ *                  }
+ *              }
  *      401:
- *        $ref: '#/responses/variants/getVariant/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *      404:
- *        $ref: '#/responses/variants/getVariant/404'
+ *        description: Not found
  */
 router.get('/variants/:id', ensureAuthenticated, function (req, res, next) {
   let id = req.params.id
@@ -168,14 +325,44 @@ router.get('/variants/:id', ensureAuthenticated, function (req, res, next) {
  *    summary: Get all departments
  *    tags: [Departments]
  *    paramteters:
- *      - $ref: '#/parameters/header/userToken'
+ *      - userToken:
+ *        name: user_token
+ *        in: header
+ *        required: true
+ *        description: authorization
+ *        schema:
+ *          type: string
  *    responses:
  *      200:
- *          $ref: '#/responses/departments/getAllDepartments/200'
+ *        description: Get all departments success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "departments": [
+ *                  {
+ *                    "_id": "5cb7cd503f467927c8313c3c",
+ *                    "departmentName": "Women",
+ *                    "categories": "Basics,Blazer"
+ *                  }
+ *                ]
+ *              }
  *      401:
- *          $ref: '#/responses/departments/getAllDepartments/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *      500:
- *          $ref: '#/responses/departments/getAllDepartments/500'
+ *          description: Get all departments fail
  */
 router.get('/departments', function (req, res, next) {
   Department.getAllDepartments(req.query, function (err, d) {
@@ -199,14 +386,43 @@ router.get('/departments', function (req, res, next) {
  *    summary: Get all categories
  *    tags: [Categories]
  *    parameters:
- *       - $ref: '#/parameters/header/userToken'
+ *       - userToken:
+ *         name: user_token
+ *         in: header
+ *         required: true
+ *         description: authorization
+ *         schema:
+ *           type: string
  *    responses:
  *       200:
- *           $ref: '#/responses/categories/getAllCategories/200'
+ *        description: Get all categories success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "categories": [
+ *                  {
+ *                    "_id": "5cb7cd503f467927c8313c38",
+ *                    "categoryName": "Blazer"
+ *                  }
+ *                ]
+ *              }
  *       401:
- *           $ref: '#/responses/categories/getAllCategories/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *       500:
- *           $ref: '#/responses/categories/getAllCategories/500'
+ *        description: Get all categories  fail
  */
 router.get('/categories', function (req, res, next) {
   Category.getAllCategories(function (err, c) {
@@ -274,14 +490,46 @@ router.get('/search', function (req, res, next) {
  *    summary: Autocomplete input any string return suggestions object
  *    tags: [Filter]
  *    parameters:
- *      - $ref: '#/parameters/query/query'
+ *      - name: query
+ *        requried: true
+ *        in: query
+ *        schema:
+ *          type: string
  *    responses:
  *      200:
- *          $ref: '#/responses/filter/200'
+ *        description: Find products success
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "filter": {
+ *                  "department": [
+ *                    "Men"
+ *                  ],
+ *                  "category": [
+ *                    "Jeans"
+ *                  ],
+ *                  "title": [
+ *                    "Perl Knit Swear"
+ *                  ]
+ *                }
+ *              }
  *      401:
- *          $ref: '#/responses/filter/401'
+ *        description: Authentication fail
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              example: {
+ *                "status": 401,
+ *                "type": "invalid_field",
+ *                "error": {
+ *                  "message": "Token is not valid"
+ *                }
+ *              }
  *      500:
- *          $ref: '#/responses/filter/500'
+ *          description: Get all categories  fail
  */
 router.get('/filter', function (req, res, next) {
   let result = {}
