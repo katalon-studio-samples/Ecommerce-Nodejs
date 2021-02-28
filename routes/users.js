@@ -17,10 +17,10 @@ const TypedError = require('../modules/ErrorHandler')
  *  description: User management
  */
 
-//POST /signin
+//POST /signup
 /**
  * @swagger
- * /users/signin:
+ * /users/signup:
  *   post:
  *     summary: Create a new user
  *     tags: [Users]
@@ -95,7 +95,7 @@ const TypedError = require('../modules/ErrorHandler')
  *                }
  *              }
  */
-router.post('/signin', function (req, res, next) {
+router.post('/signup', function (req, res, next) {
   const { fullname, email, password, verifyPassword } = req.body
   req.checkBody('fullname', 'fullname is required').notEmpty();
   req.checkBody('email', 'Email is required').notEmpty();
@@ -103,7 +103,7 @@ router.post('/signin', function (req, res, next) {
   req.checkBody('verifyPassword', 'verifyPassword is required').notEmpty();
   let missingFieldErrors = req.validationErrors();
   if (missingFieldErrors) {
-    let err = new TypedError('signin error', 400, 'missing_field', {
+    let err = new TypedError('signup error', 400, 'missing_field', {
       errors: missingFieldErrors,
     })
     return next(err)
@@ -112,7 +112,7 @@ router.post('/signin', function (req, res, next) {
   req.checkBody('password', 'Passwords have to match').equals(req.body.verifyPassword);
   let invalidFieldErrors = req.validationErrors()
   if (invalidFieldErrors) {
-    let err = new TypedError('signin error', 400, 'invalid_field', {
+    let err = new TypedError('signup error', 400, 'invalid_field', {
       errors: invalidFieldErrors,
     })
     return next(err)
@@ -125,7 +125,7 @@ router.post('/signin', function (req, res, next) {
   User.getUserByEmail(email, function (error, user) {
     if (error) return next(err)
     if (user) {
-      let err = new TypedError('signin error', 409, 'invalid_field', {
+      let err = new TypedError('signup error', 409, 'invalid_field', {
         message: "user is existed"
       })
       return next(err)
@@ -137,12 +137,12 @@ router.post('/signin', function (req, res, next) {
   })
 });
 
-//POST /login
+//POST /signin
 /**
  * @swagger
- * /users/login:
+ * /users/signin:
  *   post:
- *     summary: Login with user account
+ *     summary: Sign in with user account
  *     tags: [Users]
  *     requestBody:
  *       required: true
@@ -208,16 +208,16 @@ router.post('/signin', function (req, res, next) {
  *                  }
  *                }
  */
-router.post('/login', function (req, res, next) {
+router.post('/signin', function (req, res, next) {
   const { email, password } = req.body.credential || {}
   if (!email || !password) {
-    let err = new TypedError('login error', 400, 'missing_field', { message: "missing username or password" })
+    let err = new TypedError('Sign in error', 400, 'missing_field', { message: "missing username or password" })
     return next(err)
   }
   User.getUserByEmail(email, function (err, user) {
     if (err) return next(err)
     if (!user) {
-      let err = new TypedError('login error', 403, 'invalid_field', { message: "Incorrect email or password" })
+      let err = new TypedError('Sign in error', 403, 'invalid_field', { message: "Incorrect email or password" })
       return next(err)
     }
     User.comparePassword(password, user.password, function (err, isMatch) {
@@ -237,7 +237,7 @@ router.post('/login', function (req, res, next) {
           }
         })
       } else {
-        let err = new TypedError('login error', 403, 'invalid_field', { message: "Incorrect email or password" })
+        let err = new TypedError('Sign in error', 403, 'invalid_field', { message: "Incorrect email or password" })
         return next(err)
       }
     })
