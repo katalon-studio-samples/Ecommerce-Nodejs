@@ -6,14 +6,9 @@
 
 var app = require('../app');
 var debug = require('debug')('myapp:server');
-var https = require('https');
-var fs = require('fs');
+var http = require('http');
 var PORT = process.argv[2]&&process.argv[2].slice(-4)
 
-const certOptions = {
-  key: fs.readFileSync('/etc/letsencrypt/live/demo-store.katalon.com/fulchain.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/demo-store.katalon.com/privkey.pem')
-};
 /**
  * Get port from environment and store in Express.
  */
@@ -25,7 +20,7 @@ app.set('port', port);
  * Create HTTP server.
  */
 
-var server = https.createServer(certOptions, app);
+var server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.
